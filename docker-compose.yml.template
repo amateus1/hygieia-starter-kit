@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -34,48 +33,57 @@ services:
       - "27017:27017"
     volumes:
       - ./data/mongodb:/data/db
-  #jenkins:
-  #  build: ./jenkins
-  #  ports:
-   #   - "8080:8080"
-   #   - "50000:50000"
-   # volumes:
-   #   - ./data/jenkins:/var/jenkins_home
-   #   - ./logs/jenkins:/var/jenkins_home/logs
-   # healthcheck:
-   #   test: wget -qO- http://localhost:8080/api/json?tree=mode | grep -q '"NORMAL"'
-   #   interval: 1m
-   #   timeout: 10s
-   #   retries: 3
-   #   start_period: 5m
+  jenkins:
+    build: ./jenkins
+    ports:
+      - "8888:8080"
+      - "50000:50000"
+    volumes:
+      - ./data/jenkins:/var/jenkins_home
+      - ./logs/jenkins:/var/jenkins_home/logs
+    healthcheck:
+      test: wget -qO- http://localhost:8080/api/json?tree=mode | grep -q '"NORMAL"'
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5m
   hygieia:
     image: hygieiadoc/hygieia-starter-kit:latest
     build: ./hygieia-starter-kit
     depends_on:
       - mongodb
       - sonarqube
-    #  - jenkins
+      - jenkins
     ports:
       - "80:80"
-      #- "8080:8080"
-    environment:
+      - "8080:8080"
+    environment: 
+      - PROXY_URL=
+      - PROXY_PORT=
+      - PROXY_USERNAME=
       - PROXY_PASSWORD=
-      - GITHUB_HOST=github.com
+#      - GITHUB_HOST=github.com
+#      - GITHUB_GRAPHQL_URL=
+#      - GITHUB_BASE_API_URL=
       - GITHUB_CRON=0 1/5 * * * *
        #See https://hygieia.github.io/Hygieia/troubleshoot.html for how to get a personal access token
-      - GITHUB_PERSONAL_ACCESS_TOKEN=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
+      - GITHUB_PERSONAL_ACCESS_TOKEN=
       - JENKINS_CRON=0 2/5 * * * *
-       - JENKINS_SERVER=http://coeadmin:coe+best2022@http://mep-hygieia-docker-2.eastus2.cloudapp.azure.com:8080          
-      - SONAR_CRON=0 * * * * *
-      - SONAR_HOST=http:http://mep-hygieia-docker-2.eastus2.cloudapp.azure.com:9000
-      - SONAR_VERSION=8.9.8
+      - JENKINS_SERVER= http://jenkins:8080/
+      - SONAR_CRON=0 3/5 * * * *
+      - SONAR_HOST=http://sonarqube:9000
+      - SONAR_VERSION=8.4
       - SONAR_METRICS=ncloc,violations,new_vulnerabilities,critical_violations,major_violations,blocker_violations,tests,test_success_density,test_errors,test_failures,coverage,line_coverage,sqale_index,alert_status,quality_gate_details
-      - SONAR_USERNAME=coeadmin
-      - SONAR_PASSWORD=coe+best2022
+      - SONAR_USERNAME=
+      - SONAR_PASSWORD=
     privileged: true
-# If you want to view logs locally or have mongo data persisted uncomment out the below.
+# If you want to view logs locally or have mongo data persisted uncomment out the below. 
     volumes:
 # This is for getting container logs locally
       - './logs:/hygieia/logs'
 # This is for persisting data after the container has stopped
-      - './db/data:/var/lib/mongo'
+#      - './db/data:/var/lib/mongo'
+
+
+
+  

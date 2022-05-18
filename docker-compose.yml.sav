@@ -54,7 +54,7 @@ services:
     depends_on:
       - mongodb
       - sonarqube
-    #  - jenkins
+   #   - jenkins
     ports:
       - "80:80"
       #- "8080:8080"
@@ -67,8 +67,8 @@ services:
       - JENKINS_CRON=0 2/5 * * * *
        - JENKINS_SERVER=http://coeadmin:coe+best2022@http://mep-hygieia-docker-2.eastus2.cloudapp.azure.com:8080          
       - SONAR_CRON=0 * * * * *
-      - SONAR_HOST=http:http://mep-hygieia-docker-2.eastus2.cloudapp.azure.com:9000
-      - SONAR_VERSION=8.9.8
+       - SONAR_HOST=http://mep-hygieia-docker-2.eastus2.cloudapp.azure.com:9000
+      - SONAR_VERSION=8.4
       - SONAR_METRICS=ncloc,violations,new_vulnerabilities,critical_violations,major_violations,blocker_violations,tests,test_success_density,test_errors,test_failures,coverage,line_coverage,sqale_index,alert_status,quality_gate_details
       - SONAR_USERNAME=coeadmin
       - SONAR_PASSWORD=coe+best2022
